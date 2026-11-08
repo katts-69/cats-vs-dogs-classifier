@@ -19,3 +19,6 @@ huggingface_hub==2.4.0
 onnx==1.22.0
 onnxscript==0.7.2
 onnxruntime==1.31.1
+
+# Running the tests (python -m pytest)
+pytest==9.2.0

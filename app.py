@@ -10,26 +10,12 @@ web/ (https://huggingface.co/spaces/bebird/cat-or-dog), which runs the same mode
 The look follows arcade-os-DESIGN.md: a retro desktop with square, bevelled windows,
 a limited palette and a pixel font.
 """
-from pathlib import Path
-
 import gradio as gr
-from huggingface_hub import hf_hub_download
 
-from src.predict import Predictor
+from src.predict import Predictor, find_model
 
-MODEL_PATH = Path("models/best_model.pt")
-# Where the trained model is published on Hugging Face, for machines that don't have it locally
-MODEL_REPO = "bebird/cats-vs-dogs-efficientnet-b0"
-
-
-def find_model():
-    """Use the local model after training; otherwise (such as on Hugging Face Spaces) download it."""
-    if MODEL_PATH.exists():
-        return MODEL_PATH
-    return hf_hub_download(repo_id=MODEL_REPO, filename="best_model.pt")
-
-
-# Load the model once when the app starts, not on every upload
+# Load the model once when the app starts, not on every upload.
+# find_model() uses models/best_model.pt if you trained it, or downloads it from Hugging Face.
 predictor = Predictor(find_model())
 
 

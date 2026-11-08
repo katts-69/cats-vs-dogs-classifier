@@ -1,0 +1,9 @@
+# What the automatic tests need (used by .github/workflows/tests.yml).
+# CPU-only PyTorch: the GitHub test machine has no GPU, and this build is a much smaller download.
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.11.0
+torchvision==0.26.0
+numpy==2.1.3
+pillow==11.2.1
+huggingface_hub==2.4.0
+pytest==9.2.0

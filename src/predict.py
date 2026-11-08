@@ -16,6 +16,20 @@ from PIL import Image
 from src.data import eval_transform
 from src.model import CLASS_NAMES, load_model
 
+DEFAULT_MODEL_PATH = Path("models/best_model.pt")
+# Where the trained model is published, for machines that don't have it locally
+MODEL_REPO = "bebird/cats-vs-dogs-efficientnet-b0"
+
+
+def find_model(path=DEFAULT_MODEL_PATH):
+    """Return the local model file if it exists (after training); otherwise download it."""
+    path = Path(path)
+    if path.exists():
+        return path
+    from huggingface_hub import hf_hub_download  # only needed when downloading
+
+    return Path(hf_hub_download(repo_id=MODEL_REPO, filename="best_model.pt"))
+
 
 class Predictor:
     """Loads the trained model once, then classifies as many images as you give it."""
