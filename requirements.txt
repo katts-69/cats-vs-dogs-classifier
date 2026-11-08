@@ -15,6 +15,11 @@ matplotlib==3.10.8
 gradio==6.31.0
 huggingface_hub==2.4.0
 
+# REST API (src/api.py)
+fastapi==0.162.2
+uvicorn==0.54.0
+python-multipart==0.0.33
+
 # Converting the model for the web page (deploy/export_onnx.py)
 onnx==1.22.0
 onnxscript==0.7.2

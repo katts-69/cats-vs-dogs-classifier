@@ -32,3 +32,31 @@ jobs:
 
       - name: Run tests
         run: python -m pytest -v
+
+  # Second job, runs at the same time: build the Docker image and check the API inside it works
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get the code
+        uses: actions/checkout@v4
+
+      - name: Build the image
+        run: docker build -t cats-vs-dogs-api .
+
+      - name: Start the container
+        run: |
+          docker run -d --name api -p 8000:8000 cats-vs-dogs-api
+          # Wait up to 60 s for the server to start
+          for i in $(seq 1 60); do curl -sf http://localhost:8000/health && break; sleep 1; done
+
+      - name: Call the API
+        run: |
+          curl -sf http://localhost:8000/health
+          curl -sf -F "file=@tests/images/cat.jpg" http://localhost:8000/predict | tee cat.json
+          curl -sf -F "file=@tests/images/dog.jpg" http://localhost:8000/predict | tee dog.json
+          grep -q '"label":"Cat"' cat.json
+          grep -q '"label":"Dog"' dog.json
+
+      - name: Show the server log if something failed
+        if: failure()
+        run: docker logs api

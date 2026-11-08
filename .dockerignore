@@ -1,0 +1,18 @@
+# Files Docker never copies into the image: keeps it small, and keeps private files out.
+# The Dockerfile only copies src/ anyway; this also stops them being sent to Docker at build time.
+.git/
+.github/
+data/
+models/
+images/
+notebooks/
+web/
+deploy/
+tests/
+**/__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+venv/
+.vscode/
+*.md
