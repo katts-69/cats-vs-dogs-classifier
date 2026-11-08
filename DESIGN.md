@@ -1,6 +1,7 @@
 # Design
 
-The web app ([app.py](app.py)) looks like a retro 1990s desktop: each part of the page is a square,
+Both versions of the app follow this file: the online page ([web/](web/), plain HTML, CSS and
+JavaScript) and the local Gradio app ([app.py](app.py)). The app looks like a retro 1990s desktop: each part of the page is a square,
 bevelled window with a striped title bar, on a dotted teal wallpaper. The goal is a demo that is
 fun and memorable, while the result stays readable at a glance.
 
@@ -53,6 +54,6 @@ Input and result sit side by side on wide screens and stack on phones.
 
 ## Behaviour
 
-- Classify as soon as a photo is uploaded; the Classify button is there as well.
+- Classify as soon as a photo is chosen or dropped; no extra click needed.
 - Keep the wording plain. The limitations note must stay visible: it's part of being honest about
   the model.

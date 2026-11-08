@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cat or Dog?</title>
+  <meta name="description" content="A cat vs dog photo classifier that runs entirely in your browser.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="desktop">
+
+    <section class="win">
+      <div class="titlebar"><span>CAT_OR_DOG.EXE</span><span class="tb-buttons" aria-hidden="true"><span>_</span><span>x</span></span></div>
+      <div class="win-body">
+        <h1>Cat or Dog?</h1>
+        <p><span class="prompt">&gt;</span> Upload a photo and an EfficientNet-B0 model will tell you whether it shows a cat
+          or a dog. It was fine-tuned on 19,793 photos and scored 98.95% on 2,474 test photos it never saw during
+          training. It runs entirely in your browser: your photo is never uploaded anywhere.</p>
+      </div>
+    </section>
+
+    <div class="row">
+      <section class="win">
+        <div class="titlebar"><span>INPUT.BMP</span><span class="tb-buttons" aria-hidden="true"><span>_</span><span>x</span></span></div>
+        <div class="win-body">
+          <label class="dropzone" id="dropzone">
+            <input type="file" id="file-input" accept="image/*">
+            <img id="preview" alt="" hidden>
+            <span class="dz-text" id="dz-text">
+              <span class="dz-icon" aria-hidden="true">&#8679;</span>
+              Drop a photo here<br>or click to choose one
+            </span>
+          </label>
+          <div class="buttons">
+            <button type="button" class="btn" id="clear-btn" disabled>Clear</button>
+            <button type="button" class="btn btn-primary" id="choose-btn">Choose photo</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="win">
+        <div class="titlebar"><span>RESULT.TXT</span><span class="tb-buttons" aria-hidden="true"><span>_</span><span>x</span></span></div>
+        <div class="win-body result-body">
+          <div class="result sunken" aria-live="polite">
+            <p class="result-label" id="result-label">?</p>
+            <div id="bars"></div>
+          </div>
+          <div class="terminal">
+            <div><span class="prompt">&gt;</span> model ......... EfficientNet-B0</div>
+            <div><span class="prompt">&gt;</span> input ......... 224 x 224 px</div>
+            <div><span class="prompt">&gt;</span> trained on .... 19,793 photos</div>
+            <div><span class="prompt">&gt;</span> test accuracy . 98.95%</div>
+            <div><span class="prompt">&gt;</span> status ........ <span id="status">loading model...</span></div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <section class="win alert">
+      <div class="titlebar"><span>SYSTEM ALERT</span><span class="tb-buttons" aria-hidden="true"><span>_</span><span>x</span></span></div>
+      <div class="win-body">
+        <p><b>Limitations:</b> the model only knows cats and dogs, so any other photo will still be labelled as one of
+          the two. It is least reliable on dark, blurry or very small photos, and on photos with both animals in them.</p>
+      </div>
+    </section>
+
+    <p class="links">
+      <a href="https://github.com/katts-69/cats-vs-dogs-classifier">Code on GitHub</a> ·
+      <a href="https://huggingface.co/bebird/cats-vs-dogs-efficientnet-b0">Model on Hugging Face</a>
+    </p>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.22.0/dist/ort.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

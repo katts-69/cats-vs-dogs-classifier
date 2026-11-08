@@ -1,0 +1,157 @@
+/* Retro desktop look; the colours and rules are described in DESIGN.md */
+:root {
+  --ink: #1b1230;
+  --cream: #f4ecd0;
+  --cream2: #e2d6a8;
+  --lt: #fffbe8;
+  --sh: #b8aa7a;
+  --teal: #2a9d9d;
+  --dteal: #0e4f55;
+  --mag: #e0338f;
+  --mag-dark: #c72a7d;
+  --yel: #ffd23f;
+  --term: #0b2b30;
+  --term-text: #9ff3d0;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --px: "Press Start 2P", "Silkscreen", ui-monospace, Consolas, monospace;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--ink);
+  font: 13px/1.45 var(--mono);
+  background-color: var(--dteal);
+  background-image: radial-gradient(var(--teal) 1px, transparent 1px);  /* dotted wallpaper */
+  background-size: 4px 4px;
+}
+
+.desktop {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 16px 16px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+@media (max-width: 760px) {
+  .row { grid-template-columns: 1fr; }
+}
+
+/* A window: ink border, light/shade bevel inside, hard shadow outside */
+.win {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--cream);
+  border: 2px solid var(--ink);
+  box-shadow: inset 2px 2px 0 var(--lt), inset -2px -2px 0 var(--sh), 4px 4px 0 var(--ink);
+}
+.win-body { padding: 14px; flex: 1; }
+.win-body > p { margin: 0; }
+
+.titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 28px;
+  padding: 0 6px 0 10px;
+  border-bottom: 2px solid var(--ink);
+  background: repeating-linear-gradient(0deg, var(--mag) 0 3px, var(--mag-dark) 3px 5px);
+  color: var(--lt);
+  font: 10px var(--px);
+  letter-spacing: 1px;
+}
+.alert .titlebar { background: var(--yel); color: var(--ink); }
+.tb-buttons span {
+  display: inline-block;
+  width: 18px;
+  height: 16px;
+  margin-left: 4px;
+  background: var(--cream);
+  border: 2px solid var(--ink);
+  color: var(--ink);
+  font-size: 8px;
+  line-height: 12px;
+  text-align: center;
+}
+
+h1 { font: 16px/1.6 var(--px); margin: 0 0 10px; }
+@media (max-width: 760px) { h1 { font-size: 13px; } }
+.prompt { color: var(--mag); font-weight: bold; }
+
+/* Photo drop zone (a sunken field) */
+.dropzone {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  background: var(--lt);
+  border: 2px dashed var(--ink);
+  cursor: pointer;
+  overflow: hidden;
+}
+.dropzone.dragging { background: var(--yel); }
+.dropzone:focus-within { outline: 2px dashed var(--ink); outline-offset: 3px; }
+.dropzone input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.dropzone img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.dz-text { text-align: center; line-height: 1.8; }
+.dz-icon { display: block; font-size: 28px; line-height: 1; }
+
+.buttons { display: flex; gap: 14px; margin-top: 14px; }
+.btn {
+  flex: 1;
+  min-height: 34px;
+  padding: 6px 10px;
+  font: 10px var(--px);
+  color: var(--ink);
+  background: var(--cream2);
+  border: 2px solid var(--ink);
+  box-shadow: 3px 3px 0 var(--ink);
+  cursor: pointer;
+}
+.btn-primary { background: var(--mag); color: var(--lt); }
+.btn:hover:not(:disabled) { filter: brightness(1.05); }
+.btn:active:not(:disabled) { transform: translate(3px, 3px); box-shadow: none; }
+.btn:focus { outline: none; }
+.btn:focus-visible { outline: 2px dashed var(--ink); outline-offset: 3px; }
+.btn:disabled { opacity: 0.5; cursor: default; }
+
+/* Result */
+.result-body { display: flex; flex-direction: column; gap: 14px; }
+.sunken {
+  border: 2px solid var(--ink);
+  box-shadow: inset 2px 2px 0 var(--sh), inset -2px -2px 0 var(--lt);
+}
+.result { padding: 14px; }
+.result-label { font: 22px var(--px); text-align: center; margin: 6px 0 18px; }
+.bar-row { margin-bottom: 14px; }
+.bar-row:last-child { margin-bottom: 0; }
+.bar-track { height: 18px; background: var(--lt); border: 2px solid var(--ink); }
+.bar-fill { height: 100%; background: var(--mag); }
+.bar-text { display: flex; justify-content: space-between; margin-top: 4px; }
+
+.terminal {
+  margin-top: auto;
+  padding: 10px 12px;
+  background: var(--term);
+  color: var(--term-text);
+  font-size: 12px;
+  line-height: 1.6;
+  border: 2px solid var(--ink);
+  box-shadow: inset 2px 2px 0 #05080c;
+}
+.terminal .prompt { color: var(--yel); }
+
+.links { text-align: center; margin: 0; }
+.links a { color: var(--lt); }
