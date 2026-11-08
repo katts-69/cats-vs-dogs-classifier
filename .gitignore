@@ -1,0 +1,30 @@
+# Dataset: 870 MB of Microsoft's images, not ours to redistribute.
+# The README explains how to download and split it.
+data/
+
+# Trained model weights: hosted on Hugging Face instead (step 5)
+models/
+*.pt
+*.pth
+
+# Sample photos downloaded from the internet: other people's copyright, so they
+# stay on this computer only. Your own photos in images/ will be committed.
+images/great pyrenees.webp
+images/toletolemeimei.jpg
+
+# Archives
+*.zip
+
+# Python and Jupyter clutter
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Virtual environments
+.venv/
+venv/
+
+# Editor and OS files
+.vscode/
+Thumbs.db
+.DS_Store
