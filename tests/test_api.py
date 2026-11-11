@@ -1,5 +1,8 @@
 """Tests for the REST API in src/api.py, using FastAPI's test client (no real server needed)."""
+import io
+
 import pytest
+from PIL import Image
 from fastapi.testclient import TestClient
 
 from src.api import app
@@ -43,4 +46,33 @@ def test_missing_file_is_rejected(client):
 def test_too_large_upload_is_rejected(client):
     huge = b"\0" * (10 * 1024 * 1024 + 1)
     response = client.post("/predict", files={"file": ("huge.jpg", huge, "image/jpeg")})
+    assert response.status_code == 413
+
+
+def _image_bytes(image, fmt):
+    buffer = io.BytesIO()
+    image.save(buffer, format=fmt)
+    return buffer.getvalue()
+
+
+def test_png_and_webp_photos_are_accepted(client):
+    cat = Image.open(IMAGES / "cat.jpg")
+    for fmt in ("PNG", "WEBP"):
+        response = client.post("/predict", files={"file": (f"cat.{fmt.lower()}", _image_bytes(cat, fmt), "image/*")})
+        assert response.status_code == 200, fmt
+        assert response.json()["label"] == "Cat"
+
+
+def test_unusual_image_formats_are_refused(client):
+    # TIFF is a real image, but a format the API deliberately doesn't decode
+    tiff = _image_bytes(Image.open(IMAGES / "cat.jpg"), "TIFF")
+    response = client.post("/predict", files={"file": ("cat.tiff", tiff, "image/tiff")})
+    assert response.status_code == 400
+
+
+def test_decompression_bomb_is_refused(client):
+    # 81 million black-and-white pixels: a tiny file that would need lots of memory to decode
+    bomb = _image_bytes(Image.new("1", (9000, 9000)), "PNG")
+    assert len(bomb) < 1024 * 1024
+    response = client.post("/predict", files={"file": ("bomb.png", bomb, "image/png")})
     assert response.status_code == 413

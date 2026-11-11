@@ -23,7 +23,7 @@ saw during training. The demo runs entirely in your browser, so your photo is ne
   mislabelled beagle in the dataset.
 - **Free deployment:** exported to ONNX and run in the browser with ONNX Runtime Web, hosted as
   a static Hugging Face Space. I checked that the browser version gives the same accuracy.
-- **Engineering:** 21 automated tests, a FastAPI REST API, a Docker image, and GitHub Actions
+- **Engineering:** 24 automated tests, a FastAPI REST API, a Docker image, and GitHub Actions
   that run the tests and test the Docker container on every push.
 
 ## Contents
@@ -160,8 +160,14 @@ conversion didn't change the model:
   98.95%.
 
 **The REST API** ([`src/api.py`](src/api.py)) serves the same model to programs instead of
-people. It has `GET /health` and `POST /predict`, validates uploads (400 for a non-image, 413
-for files over 10 MB), and documents itself at `/docs`. The [`Dockerfile`](Dockerfile)
+people. It has `GET /health` and `POST /predict`, and documents itself at `/docs`. Uploads
+are treated as untrusted:
+- only common photo formats are decoded (JPEG, PNG, WEBP, GIF and BMP);
+- files over 10 MB and images over 64 megapixels are refused, since a tiny file can claim
+  huge dimensions and exhaust memory;
+- broken files get a clear 400 error.
+
+The [`Dockerfile`](Dockerfile)
 packages it as a container that:
 - uses CPU-only PyTorch;
 - has the model built into the image, so it runs offline;
@@ -170,7 +176,7 @@ packages it as a container that:
 
 **Continuous integration** ([`.github/workflows/tests.yml`](.github/workflows/tests.yml)) runs on
 every push:
-1. The 21 pytest tests in [`tests/`](tests/). They check:
+1. The 24 pytest tests in [`tests/`](tests/). They check:
    - probabilities sum to 1;
    - known cat and dog photos are classified correctly;
    - grayscale, transparent, tiny and very wide images don't crash the model;

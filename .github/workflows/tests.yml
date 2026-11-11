@@ -6,6 +6,11 @@ on:
   push:
   pull_request:
 
+# The workflow only needs to read the code. Without this, its access token can also write to
+# the repo, which a compromised third-party action could misuse.
+permissions:
+  contents: read
+
 jobs:
   test:
     runs-on: ubuntu-latest

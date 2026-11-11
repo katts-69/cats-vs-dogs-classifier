@@ -21,6 +21,15 @@ from src.predict import Predictor, find_model
 
 MAX_UPLOAD_BYTES = 10 * 1024 * 1024  # 10 MB; bigger uploads are refused
 
+# Photos from strangers are untrusted input. Only these common photo formats are decoded:
+# Pillow can also read rarer formats (TIFF, PDF, EPS, FlashPix...), and that is where most of
+# its security bugs have been found, so refusing them shrinks what an attacker can reach.
+ALLOWED_FORMATS = ["JPEG", "PNG", "WEBP", "GIF", "BMP"]
+
+# A small file can claim enormous dimensions and use gigabytes of memory once decoded
+# (a "decompression bomb"). 64 million pixels still allows photos from 50-megapixel phones.
+MAX_PIXELS = 64_000_000
+
 models = {}
 
 
@@ -67,10 +76,16 @@ def predict(file: UploadFile = File(..., description="A JPEG, PNG or other image
     if len(data) > MAX_UPLOAD_BYTES:
         raise HTTPException(status_code=413, detail="Image is too large (limit 10 MB).")
     try:
-        image = Image.open(io.BytesIO(data))
+        # open() only reads the header, so the size can be checked before any pixels are decoded
+        image = Image.open(io.BytesIO(data), formats=ALLOWED_FORMATS)
+        if image.width * image.height > MAX_PIXELS:
+            raise HTTPException(status_code=413, detail="Image has too many pixels (limit 64 megapixels).")
         image.load()  # actually decode it, so broken files fail here and not later
-    except (UnidentifiedImageError, OSError):
-        raise HTTPException(status_code=400, detail="That file is not an image I can read.")
+    except (UnidentifiedImageError, OSError, Image.DecompressionBombError):
+        raise HTTPException(
+            status_code=400,
+            detail="That file is not an image I can read. Use JPEG, PNG, WEBP, GIF or BMP.",
+        )
 
     probabilities = models["predictor"].predict(image)
     label = max(probabilities, key=probabilities.get)

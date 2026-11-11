@@ -28,5 +28,7 @@ def set_backbone_trainable(model, trainable):
 def load_model(path, device="cpu"):
     """Load trained weights from `path`, ready to make predictions."""
     model = build_model(pretrained=False)
-    model.load_state_dict(torch.load(path, map_location=device))
+    # weights_only=True loads plain numbers only. A .pt file can otherwise contain code that
+    # runs when it is loaded, which matters because this file is downloaded from the internet.
+    model.load_state_dict(torch.load(path, map_location=device, weights_only=True))
     return model.to(device).eval()

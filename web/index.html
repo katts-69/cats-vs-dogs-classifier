@@ -74,7 +74,10 @@
     </p>
   </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.22.0/dist/ort.min.js"></script>
+  <!-- integrity: the browser refuses the script if the CDN ever serves different bytes -->
+  <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.22.0/dist/ort.min.js"
+          integrity="sha384-viYmIzsXdPb1ErOTdWrs+j0B4FjltSSGeHvt08cedBpoO5xvp3qMRSo05NZTuuzh"
+          crossorigin="anonymous"></script>
   <script src="app.js"></script>
 </body>
 </html>
